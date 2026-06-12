@@ -1,73 +1,61 @@
-# React + TypeScript + Vite
+# 轉換工作評估工具（careerCal）
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+你的工作決策輔助工具
 
-Currently, two official plugins are available:
+![轉換工作評估表預覽](public/og-image.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+[https://job-worksheet.hannahtw.com/](https://careerCal.hannahtw.com/)
 
-## React Compiler
+## 亮點
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- 把「要不要接受這份工作」拆成 20 個可量化面向
+- 每項 -2～+2 分，再依權重（1～5）加總
+- 評分存在瀏覽器 localStorage，不擔心不小心關掉資料全遺失
+- 分數自動對應判斷建議（很值得轉 → 不建議轉）
+- 一鍵下載成 CSV & PDF
 
-## Expanding the ESLint configuration
+## 評分與判斷標準
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+加權分 = 評分 × 權重
+總分 = 所有面向加權分加總
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+**評分**
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| 分數 | 意思 |
+|------|------|
+| +2 | 明顯加分，很有吸引力 |
+| +1 | 小加分，可以接受 |
+| 0 | 中性，沒有明顯影響 |
+| -1 | 小扣分，需要考慮 |
+| -2 | 明顯扣分，可能成為不接的理由 |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+**權重**
+
+| 權重 | 意思 |
+|------|------|
+| 1 | 幾乎不重要 |
+| 2 | 有影響，但不是關鍵 |
+| 3 | 中等重要 |
+| 4 | 很重要 |
+| 5 | 核心關鍵 |
+
+**判斷區間**
+
+| 總分 | 建議 |
+|------|------|
+| ≥ 60 | 很值得轉 |
+| 40～59 | 偏值得，但要確認風險 |
+| 20～39 | 可以考慮，但不是明顯好選項 |
+| 0～19 | 只有在你很想離職時才考慮 |
+| < 0 | 不建議轉 |
+
+## 開發
+
+環境需求：Node 22、pnpm 9
+
+技術棧：React 19 · TypeScript · Vite · Tailwind CSS 4 · Cloudflare
+
+作者：© Hannah Wang
+授權：[MIT](LICENSE)
