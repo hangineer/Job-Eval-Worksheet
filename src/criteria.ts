@@ -15,15 +15,15 @@ export const SCORE_OPTIONS = [
 ] as const;
 
 export const CRITERIA: Criterion[] = [
-  { id: "salary-total", title: "總年薪", description: "月薪、年終、績效獎金、分紅合計", weight: 5, note: "不只看月薪，要看總年薪" },
+  { id: "salary-total", title: "總年薪", description: "月薪、年終、績效獎金、分紅等合計", weight: 5, note: "不只看月薪，要看總年薪" },
   { id: "salary-base", title: "月薪", description: "每月實際入帳是否夠舒服", weight: 4, note: "月薪低會影響現金流與未來談薪" },
   { id: "bonus-certainty", title: "獎金確定性", description: "是否白紙黑字、是否浮動", weight: 5, note: "" },
   { id: "raise-potential", title: "未來調薪空間", description: "公司調薪制度、主管是否願意培養", weight: 4, note: "" },
   { id: "dividend-potential", title: "分紅潛力(若有)", description: "部門、單位獲利、個人績效", weight: 3, note: "不要把傳聞當保證" },
-  { id: "job-technicality", title: "工作內容技術性", description: "是否真的寫程式、做工具、做產品", weight: 5, note: "最怕變支援、追進度、文件工作" },
-  { id: "tech-growth", title: "技術成長", description: "是否能學到新技術、新 domain", weight: 5, note: "" },
+  { id: "job-technicality", title: "工作內容技術性", description: "是否以專業產出為主，而非行政、協調或支援", weight: 5, note: "職稱與實際內容常不一致，最好問清楚日常在做什麼" },
+  { id: "tech-growth", title: "技術成長", description: "是否有機會學新技術或接觸新領域", weight: 5, note: "" },
   { id: "experience-fit", title: "經驗銜接", description: "與既有經驗銜接", weight: 4, note: "不是完全砍掉重練就加分" },
-  { id: "transition-risk", title: "轉職風險", description: "新領域學習曲線、適應壓力", weight: 4, note: "" },
+  { id: "transition-risk", title: "轉職風險", description: "新領域學習曲線、適應壓力", weight: 4, note: "" }, 
   { id: "resume-value", title: "履歷加分", description: "公司品牌、職稱、工作內容", weight: 5, note: "" },
   { id: "future-flexibility", title: "未來跳槽彈性", description: "下一份工作時，可選的職能與市場有多廣", weight: 5, note: "" },
   { id: "industry-outlook", title: "產業前景", description: "該產業是否穩定、有長期需求", weight: 4, note: "顯示器本身成熟，但硬體軟體有延伸性" },
