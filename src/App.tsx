@@ -1,51 +1,12 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
-import { CRITERIA, SCORE_OPTIONS, getJudgment } from "./criteria";
-
-type Scores = Record<string, number | null>;
-type Weights = Record<string, number>;
-
-const STORAGE_KEY = "career-change-scores";
-const WEIGHTS_STORAGE_KEY = "career-change-weights";
-
-const WEIGHT_GUIDE = [
-  { value: 1, meaning: "幾乎不重要" },
-  { value: 2, meaning: "有影響，但不是關鍵" },
-  { value: 3, meaning: "中等重要" },
-  { value: 4, meaning: "很重要" },
-  { value: 5, meaning: "核心關鍵" },
-] as const;
-
-const SCORE_BG: Record<number, string> = {
-  2: "bg-green-700",
-  1: "bg-green-300",
-  0: "bg-gray-400",
-  "-1": "bg-red-300",
-  "-2": "bg-red-700",
-};
-
-function useLocalStorage<T>(key: string, fallback: T) {
-  const [value, setValue] = useState<T>(() => {
-    try {
-      const raw = localStorage.getItem(key);
-      if (raw) return JSON.parse(raw) as T;
-    } catch {
-      // ignore corrupted storage
-    }
-    return fallback;
-  });
-
-  const update = (next: T | ((prev: T) => T)) => {
-    setValue((prev) => {
-      const resolved = typeof next === "function" ? (next as (prev: T) => T)(prev) : next;
-      localStorage.setItem(key, JSON.stringify(resolved));
-      return resolved;
-    });
-  };
-
-  return [value, update] as const;
-}
+import { CriteriaTable } from "./components/CriteriaTable";
+import { SiteFooter } from "./components/SiteFooter";
+import { CRITERIA, getJudgment } from "./criteria";
+import { useLocalStorage } from "./hooks/useLocalStorage";
+import { STORAGE_KEY, WEIGHTS_STORAGE_KEY } from "./lib/constants";
+import type { Scores, Weights } from "./lib/types";
 
 function App() {
   const [scores, setScores] = useLocalStorage<Scores>(STORAGE_KEY, {});
@@ -55,7 +16,7 @@ function App() {
     weights[id] ?? defaultWeight;
 
   const maxTotal = useMemo(
-    () => CRITERIA.reduce((sum, c) => sum + getWeight(c.id, c.weight) * 2, 0),
+    () => CRITERIA.reduce((sum, c) => sum + (weights[c.id] ?? c.weight) * 2, 0),
     [weights]
   );
   const minTotal = -maxTotal;
@@ -64,7 +25,7 @@ function App() {
     () =>
       CRITERIA.reduce((sum, c) => {
         const score = scores[c.id];
-        return sum + (score ?? 0) * getWeight(c.id, c.weight);
+        return sum + (score ?? 0) * (weights[c.id] ?? c.weight);
       }, 0),
     [scores, weights]
   );
@@ -96,14 +57,8 @@ function App() {
     });
   };
 
-  const handleWeightChange = (id: string, defaultWeight: number, value: string) => {
-    const parsed = Number(value);
-    if (value === "" || Number.isNaN(parsed)) return;
-    setWeight(id, defaultWeight, parsed);
-  };
-
-  const handleWeightAdjust = (id: string, defaultWeight: number, delta: number) => {
-    setWeight(id, defaultWeight, getWeight(id, defaultWeight) + delta);
+  const handleWeightChange = (id: string, defaultWeight: number, value: number) => {
+    setWeight(id, defaultWeight, value);
   };
 
   return (
@@ -116,178 +71,12 @@ function App() {
           </p>
         </header>
 
-        <div className="overflow-x-auto bg-white border border-gray-200 rounded-lg">
-          <table className="w-full border-collapse text-sm">
-            <thead>
-              <tr>
-                <th className="px-3 py-2 border-b border-gray-100 bg-gray-50 text-left whitespace-nowrap">面向</th>
-                <th className="px-3 py-2 border-b border-gray-100 bg-gray-50 text-left min-w-[200px]">評估內容</th>
-                <th className="px-3 py-2 border-b border-gray-100 bg-gray-50 text-center whitespace-nowrap">
-                  <span className="inline-flex items-center justify-center gap-1">
-                    權重
-                    <button
-                      type="button"
-                      data-tooltip-id="weight-tooltip"
-                      className="inline-flex items-center justify-center w-4 h-4 text-[10px] leading-none rounded-full bg-gray-200 hover:bg-gray-300 transition cursor-help"
-                      aria-label="權重說明"
-                    >
-                      ?
-                    </button>
-                  </span>
-                </th>
-                <th className="px-3 py-2 border-b border-gray-100 bg-gray-50 text-left whitespace-nowrap">
-                  <span className="inline-flex items-center gap-1">
-                    評分
-                    <button
-                      type="button"
-                      data-tooltip-id="score-tooltip"
-                      className="inline-flex items-center justify-center w-4 h-4 text-[10px] leading-none rounded-full bg-gray-200 hover:bg-gray-300 transition cursor-help"
-                      aria-label="評分說明"
-                    >
-                      ?
-                    </button>
-                  </span>
-                </th>
-                <th className="px-3 py-2 border-b border-gray-100 bg-gray-50 text-center whitespace-nowrap">加權分數</th>
-                <th className="px-3 py-2 border-b border-gray-100 bg-gray-50 text-left min-w-[180px] hidden md:table-cell">備註</th>
-              </tr>
-            </thead>
-            <tbody>
-              {CRITERIA.map((c) => {
-                const score = scores[c.id] ?? null;
-                const weight = getWeight(c.id, c.weight);
-                const weighted = score == null ? null : score * weight;
-                return (
-                  <tr key={c.id}>
-                    <td className="px-3 py-2 border-b border-gray-100 font-semibold whitespace-nowrap">{c.title}</td>
-                    <td className="px-3 py-2 border-b border-gray-100 min-w-[200px]">{c.description}</td>
-                    <td className="px-3 py-2 border-b border-gray-100 text-center whitespace-nowrap">
-                      <div className="inline-flex items-center gap-0.5">
-                        <button
-                          type="button"
-                          disabled={weight <= 1}
-                          className="w-7 h-7 rounded border border-gray-300 bg-gray-50 hover:bg-gray-200 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-gray-50 transition"
-                          aria-label="降低權重"
-                          onClick={() => handleWeightAdjust(c.id, c.weight, -1)}
-                        >
-                          -
-                        </button>
-                        <input
-                          type="number"
-                          min={1}
-                          max={5}
-                          className="w-10 px-1 py-1 text-center border border-gray-300 rounded [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                          value={weight}
-                          onChange={(e) => handleWeightChange(c.id, c.weight, e.target.value)}
-                        />
-                        <button
-                          type="button"
-                          disabled={weight >= 5}
-                          className="w-7 h-7 rounded border border-gray-300 bg-gray-50 hover:bg-gray-200 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-gray-50 transition"
-                          aria-label="提高權重"
-                          onClick={() => handleWeightAdjust(c.id, c.weight, 1)}
-                        >
-                          +
-                        </button>
-                      </div>
-                    </td>
-                    <td className="px-3 py-2 border-b border-gray-100">
-                      <div className="flex gap-1">
-                        {SCORE_OPTIONS.map((opt) => (
-                          <button
-                            key={opt.value}
-                            type="button"
-                            className={`w-9 h-9 rounded-md border-2 font-bold text-sm text-white transition ${SCORE_BG[opt.value]} ${
-                              score === opt.value
-                                ? "opacity-100 border-slate-800 scale-105"
-                                : "opacity-45 border-transparent hover:opacity-80 cursor-pointer"
-                            }`}
-                            title={opt.description}
-                            onClick={() => handleSelect(c.id, opt.value)}
-                          >
-                            {opt.label}
-                          </button>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="px-3 py-2 border-b border-gray-100 text-center whitespace-nowrap">
-                      {weighted == null ? (
-                        <span className="text-gray-300">—</span>
-                      ) : (
-                        <span className={`font-bold ${weighted >= 0 ? "text-green-700" : "text-red-700"}`}>
-                          {weighted > 0 ? `+${weighted}` : weighted}
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-3 py-2 border-b border-gray-100 text-gray-500 text-xs min-w-[180px] hidden md:table-cell">
-                      {c.note && c.note !== c.description ? (
-                        c.note
-                      ) : (
-                        <span className="text-gray-300">—</span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-          <Tooltip
-            id="weight-tooltip"
-            place="top"
-            className="max-w-xs"
-            content={
-              <div className="text-left text-xs">
-                <table className="border-collapse">
-                  <thead>
-                    <tr>
-                      <th className="pr-3 pb-1 font-bold text-right whitespace-nowrap">權重</th>
-                      <th className="pb-1 font-bold text-left">意義</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {WEIGHT_GUIDE.map((row) => (
-                      <tr key={row.value}>
-                        <td className="pr-3 py-0.5 text-right tabular-nums">{row.value}</td>
-                        <td className="py-0.5">{row.meaning}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            }
-          />
-          <Tooltip
-            id="score-tooltip"
-            place="top"
-            className="max-w-xs"
-            content={
-              <div className="text-left text-xs">
-                <table className="border-collapse">
-                  <thead>
-                    <tr>
-                      <th className="pr-3 pb-1 font-bold text-right whitespace-nowrap">評分</th>
-                      <th className="pb-1 font-bold text-left">意義</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {SCORE_OPTIONS.map((opt) => (
-                      <tr key={opt.value}>
-                        <td className="pr-3 py-0.5 text-right">
-                          <span
-                            className={`inline-flex items-center justify-center min-w-8 px-1.5 py-0.5 rounded-md font-bold text-white ${SCORE_BG[opt.value]}`}
-                          >
-                            {opt.label}
-                          </span>
-                        </td>
-                        <td className="py-0.5">{opt.description}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            }
-          />
-        </div>
+        <CriteriaTable
+          scores={scores}
+          getWeight={getWeight}
+          onSelect={handleSelect}
+          onWeightChange={handleWeightChange}
+        />
 
         <section className="mt-6 bg-white border border-gray-200 rounded-lg p-4 sm:p-5">
           <div className="flex justify-between items-center py-1.5">
@@ -359,9 +148,7 @@ function App() {
         </section>
       </div>
 
-      <footer className="w-full py-4 text-center text-gray-500 text-sm border-t border-gray-200 bg-white">
-        © Hannah Wang. All Rights Reserved
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
