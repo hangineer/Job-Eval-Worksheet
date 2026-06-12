@@ -5,12 +5,13 @@ import { CriteriaTable } from "./components/CriteriaTable";
 import { SiteFooter } from "./components/SiteFooter";
 import { CRITERIA, getJudgment } from "./criteria";
 import { useLocalStorage } from "./hooks/useLocalStorage";
-import { STORAGE_KEY, WEIGHTS_STORAGE_KEY } from "./lib/constants";
+import { JOB_NAME_STORAGE_KEY, STORAGE_KEY, WEIGHTS_STORAGE_KEY } from "./lib/constants";
 import type { Scores, Weights } from "./lib/types";
 
 function App() {
   const [scores, setScores] = useLocalStorage<Scores>(STORAGE_KEY, {});
   const [weights, setWeights] = useLocalStorage<Weights>(WEIGHTS_STORAGE_KEY, {});
+  const [jobName, setJobName] = useLocalStorage<string>(JOB_NAME_STORAGE_KEY, "");
 
   const getWeight = (id: string, defaultWeight: number) =>
     weights[id] ?? defaultWeight;
@@ -42,6 +43,7 @@ function App() {
 
   const handleReset = () => {
     setScores({});
+    setJobName("");
   };
 
   const setWeight = (id: string, defaultWeight: number, value: number) => {
@@ -65,7 +67,17 @@ function App() {
     <div className="flex flex-col min-h-screen">
       <div className="max-w-5xl mx-auto w-full p-6 flex-1">
         <header className="mb-4">
-          <h1 className="text-2xl font-bold mb-1">轉換工作評估表</h1>
+          <h1 className="text-2xl font-bold mb-1">轉換工作評估工具 CareerCal</h1>
+          <label className="block mt-3 mb-3">
+            <span className="text-lg font-semibold text-gray-800">工作職稱</span>
+            <input
+              type="text"
+              className="max-w-lg ml-3 p-2 border border-gray-300 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-green-600/30 focus:border-green-600"
+              placeholder="例：A公司 - 資深前端"
+              value={jobName}
+              onChange={(e) => setJobName(e.target.value)}
+            />
+          </label>
           <p className="text-gray-600">
             針對每個面向給予 -2 ~ +2 分，系統會自動依「權重 × 評分」計算加權分數並加總。
           </p>

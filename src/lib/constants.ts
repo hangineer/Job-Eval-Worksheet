@@ -1,5 +1,6 @@
 export const STORAGE_KEY = "career-change-scores";
 export const WEIGHTS_STORAGE_KEY = "career-change-weights";
+export const JOB_NAME_STORAGE_KEY = "career-change-job-name";
 
 export const WEIGHT_GUIDE = [
   { value: 1, meaning: "幾乎不重要" },
