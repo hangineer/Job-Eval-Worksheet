@@ -1,4 +1,4 @@
-export function Header() {
+function Header() {
   return (
     <header className="w-full bg-white border-b border-gray-200">
       <div className="max-w-5xl mx-auto w-full px-6 py-2">
@@ -13,3 +13,5 @@ export function Header() {
     </header>
   );
 }
+
+export default Header;

@@ -53,22 +53,3 @@ export const CRITERIA: Criterion[] = [
   { id: "job-stability", category: "environment", title: "工作穩定性", description: "公司制度、職缺穩定、組織風險", weight: 4, note: "大公司通常穩，但也看單位" },
   { id: "industry-outlook", category: "environment", title: "產業前景", description: "該產業是否穩定、有長期需求", weight: 4, note: "產業的成長性也需考量" },
 ];
-
-export interface JudgmentBand {
-  min: number;
-  label: string;
-}
-
-export const JUDGMENT_BANDS: JudgmentBand[] = [
-  { min: 80, label: "很值得轉" },
-  { min: 65, label: "偏值得，但要確認風險" },
-  { min: 50, label: "可以考慮，但不是明顯好選項" },
-  { min: 35, label: "只有在你很想離職時才考慮" },
-  { min: 0, label: "不建議轉" },
-];
-
-/** @param percent 0~100 的得分率 */
-export function getJudgment(percent: number): string {
-  const band = JUDGMENT_BANDS.find(b => percent >= b.min);
-  return band ? band.label : "";
-}
