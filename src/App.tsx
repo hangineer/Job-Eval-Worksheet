@@ -17,10 +17,10 @@ function App() {
     weights[id] ?? defaultWeight;
 
   const maxTotal = useMemo(
-    () => CRITERIA.reduce((sum, c) => sum + (weights[c.id] ?? c.weight) * 2, 0),
+    () => CRITERIA.reduce((sum, c) => sum + (weights[c.id] ?? c.weight) * 5, 0),
     [weights]
   );
-  const minTotal = -maxTotal;
+  const minTotal = 0;
 
   const total = useMemo(
     () =>
@@ -73,13 +73,13 @@ function App() {
             <input
               type="text"
               className="max-w-lg ml-3 p-2 border border-gray-300 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-green-600/30 focus:border-green-600"
-              placeholder="例：A公司 - 資深前端"
+              placeholder="例：A 公司 - 資深前端"
               value={jobName}
               onChange={(e) => setJobName(e.target.value)}
             />
           </label>
           <p className="text-gray-600">
-            針對每個面向給予 -2 ~ +2 分，系統會自動依「權重 × 評分」計算加權分數並加總。
+            針對每個面向給予 0 ~ 5 分，系統會自動依「權重 × 評分」計算加權分數並加總。
           </p>
         </header>
 
@@ -105,8 +105,8 @@ function App() {
           </div>
           <div className="flex justify-between items-center py-1.5 my-1 text-2xl font-bold border-t border-b border-gray-100">
             <span>總分</span>
-            <span className={total >= 0 ? "text-green-700" : "text-red-700"}>
-              {total > 0 ? `+${total}` : total}
+            <span className="text-green-700">
+              {total}
               <small className="ml-1 text-xs font-normal text-gray-400">
                 （範圍 {minTotal} ~ {maxTotal}）
               </small>
@@ -130,11 +130,11 @@ function App() {
                   <div className="text-left text-xs">
                     <div className="font-bold mb-1">分數區間與判斷</div>
                     <div className="space-y-0.5 flex flex-col">
-                      <span className="font-semibold">60 分以上：很值得轉</span>
-                      <span className="font-semibold">40～59 分：偏值得，但要確認風險</span>
-                      <span className="font-semibold">20～39 分：可以考慮，但不是明顯好選項</span>
-                      <span className="font-semibold">0～19 分：只有在你很想離職時才考慮</span>
-                      <span className="font-semibold">0 分以下：不建議轉</span>
+                      <span className="font-semibold">240 分以上：很值得轉</span>
+                      <span className="font-semibold">195～239 分：偏值得，但要確認風險</span>
+                      <span className="font-semibold">155～194 分：可以考慮，但不是明顯好選項</span>
+                      <span className="font-semibold">115～154 分：只有在你很想離職時才考慮</span>
+                      <span className="font-semibold">115 分以下：不建議轉</span>
                     </div>
                   </div>
                 }

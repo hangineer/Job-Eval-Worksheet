@@ -120,8 +120,8 @@ export function CriteriaTable({
                   {weighted == null ? (
                     <span className="text-gray-300">—</span>
                   ) : (
-                    <span className={`font-bold ${weighted >= 0 ? "text-green-700" : "text-red-700"}`}>
-                      {weighted > 0 ? `+${weighted}` : weighted}
+                    <span className="font-bold text-green-700">
+                      {weighted}
                     </span>
                   )}
                 </td>

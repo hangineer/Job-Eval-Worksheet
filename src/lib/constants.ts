@@ -11,9 +11,10 @@ export const WEIGHT_GUIDE = [
 ] as const;
 
 export const SCORE_BG: Record<number, string> = {
-  "2": "bg-green-700",
-  "1": "bg-green-300",
-  "0": "bg-gray-400",
-  "-1": "bg-red-300",
-  "-2": "bg-red-700",
+  "0": "bg-red-600",
+  "1": "bg-orange-500",
+  "2": "bg-amber-500",
+  "3": "bg-lime-600",
+  "4": "bg-green-600",
+  "5": "bg-green-700",
 } as const;
