@@ -1,4 +1,4 @@
-import { CRITERIA } from "../criteria";
+import { CRITERIA } from "./criteria";
 import type { Scores, Weights } from "./types";
 
 // 至少評過這個比例的項目才提供判斷（0.6 = 六成）

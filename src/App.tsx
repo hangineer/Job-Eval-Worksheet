@@ -5,6 +5,7 @@ import { CriteriaTable } from "./components/CriteriaTable";
 import { SiteFooter } from "./components/SiteFooter";
 import Header from "./components/Header";
 import { CRITERIA } from "./lib/criteria";
+import { exportScoresToExcel } from "./lib/export";
 import { useLocalStorage } from "./hooks/useLocalStorage";
 import {
   JOB_NAME_STORAGE_KEY,
@@ -41,7 +42,7 @@ function App() {
     () => evaluateScores(scores, weights),
     [scores, weights],
   );
-  const { answeredCount, percent, progress } = result;
+  const { answeredCount, percent, progress, hasEnoughCoverage } = result;
 
   const handleSelect = (id: string, value: number) => {
     setScores((prev) => ({
@@ -76,6 +77,13 @@ function App() {
     <div className="flex flex-col min-h-screen">
       <Header />
       <div className="max-w-5xl mx-auto w-full p-6 flex-1">
+        <p className="text-gray-600">
+          針對每個面向給予 1 ~ 5 分，系統依「權重 × 評分」計算得分率
+        </p>
+        <ul className="text-gray-600 list-disc list-inside my-1">
+          <li>不在乎的面向：把權重調低（最低為 1）</li>
+          <li>不知道的面向：留空跳過</li>
+        </ul>
         <label className="block mt-3 mb-3">
           <span className="text-lg font-semibold text-gray-800">工作職稱</span>
           <input
@@ -86,14 +94,6 @@ function App() {
             onChange={e => setJobName(e.target.value)}
           />
         </label>
-        <p className="text-gray-600">
-          針對每個面向給予 1 ~ 5 分，系統依「權重 × 評分」計算得分率
-        </p>
-        <ul className="text-gray-600 list-disc list-inside my-1">
-          <li>不在乎的面向：把權重調低（最低為 1）</li>
-          <li>不知道的面向：留空跳過</li>
-        </ul>
-
         <CriteriaTable
           scores={scores}
           getWeight={getWeight}
@@ -157,8 +157,9 @@ function App() {
 
           <button
             type="button"
-            className="mt-4 ml-2 px-4 py-2 border border-gray-300 rounded-md bg-gray-50 hover:bg-gray-200 transition cursor-pointer"
-            onClick={handleReset}
+            className="mt-4 ml-2 px-4 py-2 border border-gray-300 rounded-md bg-gray-50 hover:bg-gray-200 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-50"
+            onClick={() => exportScoresToExcel(jobName, scores, weights, result)}
+            disabled={!hasEnoughCoverage}
           >
             下載評分表
           </button>

@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
-import { CATEGORIES, CRITERIA, SCORE_OPTIONS } from "../criteria";
+import { CATEGORIES, CRITERIA, SCORE_OPTIONS } from "../lib/criteria";
 import { WEIGHT_GUIDE } from "../lib/constants";
 import type { Scores } from "../lib/types";
 
