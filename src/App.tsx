@@ -4,7 +4,7 @@ import "react-tooltip/dist/react-tooltip.css";
 import { CriteriaTable } from "./components/CriteriaTable";
 import { SiteFooter } from "./components/SiteFooter";
 import Header from "./components/Header";
-import { CRITERIA } from "./criteria";
+import { CRITERIA } from "./lib/criteria";
 import { useLocalStorage } from "./hooks/useLocalStorage";
 import {
   JOB_NAME_STORAGE_KEY,
