@@ -8,7 +8,7 @@ export async function exportScoresToExcel(
   scores: Scores,
   weights: Weights,
   result: ScoreResult,
-): void {
+): Promise<void> {
   const rows = CRITERIA.map((c) => {
     const score = scores[c.id];
     const weight = weights[c.id] ?? c.weight;
