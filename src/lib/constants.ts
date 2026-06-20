@@ -9,12 +9,3 @@ export const WEIGHT_GUIDE = [
   { value: 4, meaning: "很重要" },
   { value: 5, meaning: "核心關鍵" },
 ] as const;
-
-export const SCORE_BG: Record<number, string> = {
-  "0": "bg-red-600",
-  "1": "bg-orange-500",
-  "2": "bg-amber-500",
-  "3": "bg-lime-600",
-  "4": "bg-green-600",
-  "5": "bg-green-700",
-} as const;
