@@ -23,7 +23,6 @@ export interface Criterion {
 }
 
 export const SCORE_OPTIONS = [
-  { value: 0, label: "0", description: "如果你不在乎此面向，可選 0" },
   { value: 1, label: "1", description: "明顯偏差，需要考慮" },
   { value: 2, label: "2", description: "略差，但可接受" },
   { value: 3, label: "3", description: "普通，沒有明顯影響" },
@@ -33,9 +32,9 @@ export const SCORE_OPTIONS = [
 
 export const CRITERIA: Criterion[] = [
   // 金錢報酬
-  { id: "salary-total", category: "money", title: "總年薪", description: "月薪、年終、績效獎金、分紅等合計", weight: 5, note: "獎金是否白紙黑字、是否浮動" },
+  { id: "salary-total", category: "money", title: "總年薪", description: "年終、績效獎金、分紅等合計", weight: 5, note: "獎金是否白紙黑字、是否浮動" },
   { id: "salary-base", category: "money", title: "月薪", description: "是否有足夠的現金流", weight: 4, note: "月薪低會影響現金流與未來談薪" },
-  { id: "raise-potential", category: "money", title: "未來調薪空間", description: "公司調薪制度、主管是否願意培養", weight: 4, note: "" },
+  { id: "raise-potential", category: "money", title: "未來調薪空間", description: "公司調薪制度", weight: 4, note: "" },
   // 職涯發展與未來選擇權
   { id: "tech-growth", category: "growth", title: "技術成長", description: "是否有機會學新技術或接觸新領域", weight: 5, note: "" },
   { id: "experience-fit", category: "growth", title: "經驗銜接", description: "與既有經驗銜接", weight: 4, note: "經驗需能夠累積" },
@@ -57,19 +56,19 @@ export const CRITERIA: Criterion[] = [
 
 export interface JudgmentBand {
   min: number;
-  max: number;
   label: string;
 }
 
 export const JUDGMENT_BANDS: JudgmentBand[] = [
-  { min: 240, max: Infinity, label: "很值得轉" },
-  { min: 195, max: 239, label: "偏值得，但要確認風險" },
-  { min: 155, max: 194, label: "可以考慮，但不是明顯好選項" },
-  { min: 115, max: 154, label: "只有在你很想離職時才考慮" },
-  { min: -Infinity, max: 114, label: "不建議轉" },
+  { min: 80, label: "很值得轉" },
+  { min: 65, label: "偏值得，但要確認風險" },
+  { min: 50, label: "可以考慮，但不是明顯好選項" },
+  { min: 35, label: "只有在你很想離職時才考慮" },
+  { min: 0, label: "不建議轉" },
 ];
 
-export function getJudgment(total: number): string {
-  const band = JUDGMENT_BANDS.find((b) => total >= b.min && total <= b.max);
+/** @param percent 0~100 的得分率 */
+export function getJudgment(percent: number): string {
+  const band = JUDGMENT_BANDS.find(b => percent >= b.min);
   return band ? band.label : "";
 }

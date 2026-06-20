@@ -118,7 +118,7 @@ export function CriteriaTable({
                         key={opt.value}
                         type="button"
                         className={`w-9 h-9 rounded-md border-2 font-bold text-sm text-white transition ${
-                          ["bg-red-600", "bg-orange-500", "bg-amber-500", "bg-lime-600", "bg-green-600", "bg-green-700"][opt.value]
+                          ["bg-red-600", "bg-orange-500", "bg-amber-500", "bg-lime-600", "bg-green-700"][opt.value - 1]
                         } ${
                           score === opt.value
                             ? "opacity-100 border-slate-800 scale-105"
@@ -200,7 +200,7 @@ export function CriteriaTable({
                     <td className="pr-3 py-0.5 text-right">
                       <span
                         className={`inline-flex items-center justify-center min-w-8 px-1.5 py-0.5 rounded-md font-bold text-white ${
-                          ["bg-red-600", "bg-orange-500", "bg-amber-500", "bg-lime-600", "bg-green-600", "bg-green-700"][opt.value]
+                          ["bg-red-600", "bg-orange-500", "bg-amber-500", "bg-lime-600", "bg-green-700"][opt.value - 1]
                         }`}
                       >
                         {opt.label}
