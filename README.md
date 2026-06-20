@@ -1,10 +1,9 @@
-# 轉換工作評估工具（careerCal）
+# 轉換工作評估工具 CareerCal
 
 你的工作決策輔助工具
-
 ![轉換工作評估表預覽](public/og-image.png)
 
-[https://job-worksheet.hannahtw.com/](https://careerCal.hannahtw.com/)
+[https://careerCal.hannahtw.com/](https://careerCal.hannahtw.com/)
 
 ## 亮點
 
